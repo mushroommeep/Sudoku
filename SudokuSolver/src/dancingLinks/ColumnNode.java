@@ -12,24 +12,24 @@ public class ColumnNode extends DancingNode{
 	}
 	
 	public void cover(){
-		unlinkLR();
+		this.unlinkLR();
 		for(DancingNode row = this.getD(); row != this; row = row.getD())
 			for(DancingNode colRight = row.getR(); colRight != row; colRight = colRight.getR()){
 				colRight.unlinkUD();
-				colRight.getC().S--;
+				int nbN = colRight.getC().getS() -1;
+				colRight.getC().setS(nbN);
 			}
 	}
 	
 	public void uncover(){
 		for (DancingNode row = this.getU(); row != this; row = row.getU())
 			for(DancingNode colLeft = row.getL(); colLeft != row; colLeft = colLeft.getL()){
-				colLeft.getC().S++;
-				relinkUD();
+				int nbN = colLeft.getC().getS() +1;
+				colLeft.getC().setS(nbN);
+				colLeft.relinkUD();
 			}
-		relinkLR();
+		this.relinkLR();
 	}
-	
-	// Getters and setters
 	
 	public int getS() {
 		return S;
@@ -41,9 +41,5 @@ public class ColumnNode extends DancingNode{
 
 	public String getN() {
 		return N;
-	}
-
-	public void setN(String n) {
-		N = n;
 	}
 }

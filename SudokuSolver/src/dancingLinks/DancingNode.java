@@ -37,40 +37,20 @@ public class DancingNode {
 	}
 	
 	
-	// Getters and setters
-	
 	public DancingNode getL() {
 		return L;
-	}
-
-	
-	public void setL(DancingNode l) {
-		L = l;
 	}
 
 	public DancingNode getR() {
 		return R;
 	}
 
-	
-	public void setR(DancingNode r) {
-		R = r;
-	}
-
 	public DancingNode getU() {
 		return U;
 	}
-
-	public void setU(DancingNode u) {
-		U = u;
-	}
-
+	
 	public DancingNode getD() {
 		return D;
-	}
-
-	public void setD(DancingNode d) {
-		D = d;
 	}
 
 	public ColumnNode getC() {

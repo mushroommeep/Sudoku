@@ -3,6 +3,9 @@ package application;
 import java.util.ArrayList;
 
 import dancingLinks.DancingLinks;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class Sudoku {
 	private static final int size = 9;
@@ -17,9 +20,9 @@ public class Sudoku {
 	private static final int REGION_OFFSET = 3*size*size;
 	private static final int boxSize = (int) Math.sqrt(size);
 	
-	private int[] board;
+	private int[][] board;
 	
-	public Sudoku(int[] board){
+	public Sudoku(int[][] board){
 		this.board = board;
 	}
 	
@@ -28,8 +31,8 @@ public class Sudoku {
 			rowValues[i]= false;
 			
 		rowValues[row*size + col] = true;  
-		rowValues[ROW_OFFSET + col*size + num - 1] = true;
-		rowValues[COLUMN_OFFSET + row*size + num - 1] = true;	
+		rowValues[ROW_OFFSET + row*size + num - 1] = true;
+		rowValues[COLUMN_OFFSET + col*size + num - 1] = true;	
 		int box =  boxSize*(row / boxSize) + (col / boxSize);
 		rowValues[REGION_OFFSET + box*size + num - 1] = true;
 		
@@ -61,7 +64,7 @@ public class Sudoku {
 	    for(int x=0; x < boxSize; x++) {
 	      for(int y=0; y < boxSize; y++) {
 	        for(int num=1; num <= size; num++) {
-	          dlBoard.addColumnNode((new StringBuilder(num + "inBox" + (2*x+y)% size)).toString());
+	          dlBoard.addColumnNode((new StringBuilder(num + "inBox" + x + "-" + y)).toString());
 	        }
 	      }
 	    }
@@ -71,20 +74,27 @@ public class Sudoku {
 	    boolean[] rowValues = new boolean[COLS];
 		for(int row = 0; row < size; row++){
 			for(int col = 0; col < size; col++){
-				if(board[col*size + row] == 0){
+				if(board[row][col] == 0){
 					for(int num = 1; num <= size; num++){
 						dlBoard.addRow(constraintSet(rowValues, row, col, num));
 					}
 				}else{
-					dlBoard.addRow( constraintSet(rowValues, row, col, board[col*size + row]));
+					dlBoard.addRow( constraintSet(rowValues, row, col, board[row][col]));
 				}
 			}
 		}
 		return dlBoard;
 	}
 	
-	 public void solve() {
+	 public int[][] solve() {
 		    DancingLinks model = convertSToDL();
-		    model.search(new ArrayList<>());
+		    int res = model.search(new ArrayList<>(), board);
+		    System.out.println(res + " solutions found.");
+		    if(res == 0){
+			    Alert alert = new Alert(AlertType.NONE, "Please check your Sudoku board again...", ButtonType.OK);
+			    alert.setHeaderText("NO SOLUTION FOUND");
+			    alert.showAndWait();
+		    }
+		    return board;
 	 }
 }

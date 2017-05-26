@@ -54,11 +54,11 @@ public class DancingLinks {
 		return curr;
 	}
 	
-	public void search(List<DancingNode> answer){
-		
+	public int search(List<DancingNode> answer, int[][] board){
+		int results = 0;
 		if(head.getR() == head){
-			getResults(answer);
-			return;
+			getResults(answer, board);
+			results++;
 		}
 		else{ ColumnNode c = chooseColumn();
 			if(c.getS() > 0){
@@ -68,7 +68,7 @@ public class DancingLinks {
 					for(DancingNode col = row.getR(); col != row; col = col.getR()){
 						col.getC().cover();
 					}
-					search(answer);
+					results += search(answer, board);
 					answer.remove(answer.size()-1);
 					for(DancingNode col = row.getL(); col != row; col = col.getL()){
 						col.getC().uncover();
@@ -77,10 +77,36 @@ public class DancingLinks {
 				c.uncover();
 			}
 		}
-		return; 
+		return results; 
 	}
 	
-	 private void getRowName(DancingNode row) {
+	private void getRowName(DancingNode row, int[][]board){
+		int r = 0, c = 0, v = 0;
+		String s = row.getC().getN();
+		if(s.contains("inRow")){
+			v = Integer.parseInt(Character.toString(s.charAt(s.indexOf("i")-1)));
+			r = Integer.parseInt(Character.toString(s.charAt(s.indexOf("w")+1)));
+		}else if(s.contains("inCol")){
+			c = Integer.parseInt(Character.toString(s.charAt(s.indexOf("l")+1)));
+		}
+		for(DancingNode node = row.getR(); node != row; node = node.getR()){
+			s = node.getC().getN();
+			if(s.contains("inRow")){
+				v = Integer.parseInt(Character.toString(s.charAt(s.indexOf("i")-1)));
+				r = Integer.parseInt(Character.toString(s.charAt(s.indexOf("w")+1)));
+			}else if(s.contains("inCol")){
+				c = Integer.parseInt(Character.toString(s.charAt(s.indexOf("l")+1)));
+			}
+		}
+		board[r][c]=v;
+	}
+	
+	public void getResults(List<DancingNode> res, int[][] board){
+		for(DancingNode node : res)
+			getRowName(node,board);
+	}
+	
+	 /*private void getRowName(DancingNode row) {
 		    System.out.print(row.getC().getN()+ "___");
 		    for(DancingNode node = row.getR(); node != row; node = node.getR()){
 		    	System.out.print(node.getC().getN()+"____");
@@ -92,5 +118,5 @@ public class DancingLinks {
 		for(DancingNode dn : result){
 			getRowName(dn);
 		}
-	}
+	}*/
 }

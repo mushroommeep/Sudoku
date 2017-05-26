@@ -15,11 +15,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SudokuWindow {
-	private int[] board;
+	private int[][] board;
 	private int size = Sudoku.getSize();
 
 	public SudokuWindow(Stage stage) {
-		board = new int[size*size];
+		board = new int[size][size];
 		stage.setTitle("Sudoku Solver");
 		VBox root = new VBox();
 	    Scene scene = new Scene(root, 400, 450);
@@ -36,7 +36,7 @@ public class SudokuWindow {
 		    for(int col = 1; col <= size; col++){
 		    	ComboBox<Integer> temp = new ComboBox<>();
 		    	combo.add(temp);
-		    	temp.getItems().addAll(1,2,3,4,5,6,7,8,9);
+		    	temp.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
 		    	temp.setEditable(false);
 		    	temp.setMinSize(35, 35);
 		    	temp.setMaxSize(35, 35);
@@ -56,14 +56,18 @@ public class SudokuWindow {
 		 btn.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	for(int i = 0; i < combo.size(); i++){
-	            		if(combo.get(i).getValue() == null){
-	            			board[i] = 0;
-	            		}else
-	            			board[i] = combo.get(i).getValue();
+	            	for(int i = 0; i < size; i++)
+	            		for(int j = 0; j < size; j++){
+	            			if(combo.get(i*size+j).getValue() == null || combo.get(i*size+j).getValue() == 0){
+	            				board[i][j] = 0;
+	            			}else
+	            				board[i][j] = combo.get(i*size+j).getValue();
 	            	}
 	            	Sudoku su = new Sudoku(board);
-	                su.solve();
+	                board = su.solve();
+	                for(int i = 0; i < size; i++)
+	                	for(int j = 0; j < size; j++)
+	                		combo.get(i*size+j).setValue(board[i][j]);
 	            }
 	        });
 	        
